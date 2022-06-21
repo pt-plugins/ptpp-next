@@ -1,12 +1,35 @@
-import {defineStore} from "pinia";
-import {BittorrentClientBaseConfig} from "@ptpp/downloader";
-import {nanoid} from "nanoid";
+import { defineStore } from "pinia";
+import { nanoid } from "nanoid";
+import { AbstractBittorrentClient, type BittorrentClientBaseConfig, getDownloader } from "@ptpp/downloader";
+
+interface downloadHistory {
+  timestamp: number,
+  clientId: string,
+
+}
+
+const downloaderInstanceCache: Map<string, AbstractBittorrentClient> = new Map();
 
 export const useDownloaderStore = defineStore("downloader", {
   persistWebExt: true,
   state: () => ({
     defaultDownloaderId: null as unknown as string,
-    clients: [] as BittorrentClientBaseConfig[]
+    clients: [] as BittorrentClientBaseConfig[],
+    recordDownloadHistory: {
+      enable: true,
+      records: [] as downloadHistory[],
+    },
+    retryOnDownload: {
+      enable: false,
+      times: 3,
+      period: 5
+    },
+    useBackgroundTask: false,
+    confirmOnExceedSize: {
+      enable: true,
+      exceedSize: 10,
+      exceedSizeUnit: "GiB"
+    }
   }),
 
   getters: {
@@ -16,13 +39,13 @@ export const useDownloaderStore = defineStore("downloader", {
   },
 
   actions: {
-    getClient(clientId: string) {
+    getDownloaderConfig(clientId: string) {
       return this.clients.find(data => {
         return data.id === clientId;
       });
     },
 
-    addClient(client: BittorrentClientBaseConfig) {
+    addDownloaderConfig(client: BittorrentClientBaseConfig) {
       // 为这个client辅初始uid
       if (typeof client.id === "undefined") {
         client.id = nanoid();
@@ -36,14 +59,14 @@ export const useDownloaderStore = defineStore("downloader", {
       }
     },
 
-    patchClient(client: BittorrentClientBaseConfig) {
+    patchDownloaderConfig(client: BittorrentClientBaseConfig) {
       const clientIndex = this.clients.findIndex(data => {
         return data.id === client.id;
       });
       this.clients[clientIndex] = client;
     },
 
-    removeClient(clientId: string) {
+    removeDownloaderConfig(clientId: string) {
       const clientIndex = this.clients.findIndex(data => {
         return data.id === clientId;
       });
@@ -52,9 +75,29 @@ export const useDownloaderStore = defineStore("downloader", {
         this.clients.splice(clientIndex, 1);
       }
 
+      // if this downloader is default downloader
       if (clientId === this.defaultDownloaderId) {
         this.defaultDownloaderId = null as unknown as string;
       }
+
+      // Clean download History for this downloader
+      this.recordDownloadHistory.records =
+        this.recordDownloadHistory.records.filter(rec => rec.clientId !== clientId);
+    },
+
+    async getDownloader(clientId: string): Promise<AbstractBittorrentClient> {
+      if (!downloaderInstanceCache.has(clientId)) {
+        const downloaderConfig = this.getDownloaderConfig(clientId)!;
+
+        const downloaderInstance = await getDownloader(downloaderConfig);
+
+        // TODO Do some wrapper for create downloaderInstance to support recordDownloadHistory, retryOnDownload
+        // const downloaderInstanceProxy = new Proxy(downloaderInstance, {});
+
+        downloaderInstanceCache.set(clientId, downloaderInstance);
+      }
+
+      return downloaderInstanceCache.get(clientId)!;
     }
   }
 });

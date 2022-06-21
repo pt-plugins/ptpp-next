@@ -9,7 +9,7 @@ const clientConfig = inject("clientConfig") as Ref<BittorrentClientBaseConfig>;
 
 function patchClient() {
   const store = useDownloaderStore();
-  store.patchClient(clientConfig.value);
+  store.patchDownloaderConfig(clientConfig.value);
   showDialog.value = false;
 }
 </script>

@@ -42,15 +42,9 @@ export  function getDownloaderIcon(configType: string):string {
   return downloaderIconContext(`./${configType}.png`);
 }
 
-const clientInstanceCache: Record<string, AbstractBittorrentClient> = {};
-
 export async function getDownloader(config: BittorrentClientBaseConfig): Promise<AbstractBittorrentClient> {
-  if (typeof clientInstanceCache[config.id!] === "undefined") {
-    const DownloaderClass = (await getDownloaderModule(config.type)).default;
+  const DownloaderClass = (await getDownloaderModule(config.type)).default;
 
-    // @ts-ignore
-    clientInstanceCache[config.id] = new DownloaderClass(config);
-  }
-
-  return clientInstanceCache[config.id!];
+  // @ts-ignore
+  return new DownloaderClass(config);
 }

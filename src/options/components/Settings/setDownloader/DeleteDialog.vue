@@ -9,7 +9,7 @@ function removeClients() {
   const downloaderStore = useDownloaderStore();
 
   for (const toDeleteDownloaderId of toDeleteDownloaderIds.value) {
-    downloaderStore.removeClient(toDeleteDownloaderId);
+    downloaderStore.removeDownloaderConfig(toDeleteDownloaderId);
   }
   toDeleteDownloaderIds.value = [];
   showDialog.value = false;

@@ -43,7 +43,7 @@ async function updateSelectedClientType(selectClientType: string) {
 
 function saveClient() {
   const downloaderStore = useDownloaderStore();
-  downloaderStore.addClient(unref(clientConfig));
+  downloaderStore.addDownloaderConfig(unref(clientConfig));
   showDialog.value = false;
 }
 </script>
