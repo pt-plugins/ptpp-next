@@ -1,25 +1,21 @@
 /**
  * this plugin is edit from ohmree/pinia-plugin-webext-storage
  */
-import {ref, type Ref} from "vue";
+import { ref, type Ref } from "vue";
 import browser from "webextension-polyfill";
-import {PiniaPluginContext, MutationType} from "pinia";
-import {persistent, restore, storageArea} from "./storage";
+import { PiniaPluginContext, MutationType } from "pinia";
+import {
+  persistent, restore,
+  type persistentOptions, type restoreOptions
+} from "@/shared/browser/storage";
 
-export interface PersistedStateOptions {
+export interface PersistedStateOptions extends Omit<persistentOptions & restoreOptions, "initialValue"> {
   /**
    * Storage key to use.
    * @default $store.id
    */
   key?: string;
 
-  /**
-   * Where to store persisted state.
-   * @default 'local'
-   */
-  storageArea?: storageArea;
-
-  writeDefaultState?: boolean;
   autoSaveType?: boolean | MutationType[];
 
   /**
@@ -33,8 +29,6 @@ export interface PersistedStateOptions {
    * @default undefined
    */
   afterRestore?: (context: PiniaPluginContext) => void;
-
-  onRestoreError?: (e: any) => void;
 }
 
 declare module "pinia" {
@@ -42,7 +36,7 @@ declare module "pinia" {
     /**
      * Persist store in storage.
      */
-    persist?: boolean | PersistedStateOptions;
+    persistWebExt?: boolean | PersistedStateOptions;
   }
 
   export interface PiniaCustomProperties {
@@ -52,32 +46,31 @@ declare module "pinia" {
   }
 }
 
+export default function webExtStorage(context: PiniaPluginContext) {
+  const { options: { persistWebExt }, store } = context;
 
-export default function piniaBridgePlugin(context: PiniaPluginContext) {
-  const {options: {persist}, store} = context;
-
-  if (!persist) {
+  if (!persistWebExt) {
     return {};
   }
 
   const {
     key = store.$id,
     storageArea = "local",
-    writeDefaultState = true,
+    writeDefaults = true,
     autoSaveType = [MutationType.direct],
+    pickPath = undefined,
+    omitPath = ["cache"],
     beforeRestore = null,
     afterRestore = null,
-    onRestoreError = null
-  } = typeof persist !== "boolean" ? persist : {};
+    onError = null
+  } = typeof persistWebExt !== "boolean" ? persistWebExt : {};
 
   const $ready = ref(false);
 
   beforeRestore?.(context);
   restore(key, {
     initialValue: store.$state,
-    storage: storageArea,
-    writeDefaults: writeDefaultState,
-    onError: onRestoreError
+    storageArea, writeDefaults, onError
   })
     .then(value => {
       store.$patch(value as unknown as typeof store.$state);
@@ -96,10 +89,10 @@ export default function piniaBridgePlugin(context: PiniaPluginContext) {
   const $save = async (newState = store.$state) => {
     try {
       browser.storage.onChanged.removeListener(onChanged);
-      // HACK: we might want to find a better way of deeply unwrapping a reactive object.
-      await persistent(key, newState, storageArea);
+      await persistent(key, newState, { storageArea, pickPath, omitPath });
       browser.storage.onChanged.addListener(onChanged);
     } catch (_error) {
+      onError?.(_error, "piniaSave");
     }
   };
 
@@ -117,5 +110,5 @@ export default function piniaBridgePlugin(context: PiniaPluginContext) {
     store.$dispose();
   };
 
-  return {$dispose, $save, $ready};
+  return { $dispose, $save, $ready };
 }

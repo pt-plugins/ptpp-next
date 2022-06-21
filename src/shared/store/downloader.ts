@@ -3,7 +3,7 @@ import {BittorrentClientBaseConfig} from "@ptpp/downloader";
 import {nanoid} from "nanoid";
 
 export const useDownloaderStore = defineStore("downloader", {
-  persist: true,
+  persistWebExt: true,
   state: () => ({
     defaultDownloaderId: null as unknown as string,
     clients: [] as BittorrentClientBaseConfig[]

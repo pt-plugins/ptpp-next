@@ -42,7 +42,7 @@ type supportThemeType = typeof supportTheme[number];
 const preferDark =  usePreferredDark();
 
 export const useUIStore = defineStore("ui", {
-  persist: true,
+  persistWebExt: true,
   state: () => (
     {
       theme: "light" as supportThemeType,
