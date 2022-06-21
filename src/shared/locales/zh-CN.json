@@ -65,7 +65,7 @@
         "default": "<默　　认>"
       },
       "searchTip": "输入种子关键字、IMDb编号进行搜索",
-      "wiki": "帮助"
+      "help": "帮助"
     }
   },
   "route": {

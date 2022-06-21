@@ -22,11 +22,3 @@ export enum EUserDataRange {
   all = "all"
 }
 
-/**
- * 插件安装方式
- */
-export enum EInstallType {
-  development = "development", // 相当于 zip 解压方式安装
-  normal = "normal", // 从 官方市场 安装
-  packed = "packed" // 从 自打包CRX/XPI 安装（相当于原 EInstallType.crx ）
-}

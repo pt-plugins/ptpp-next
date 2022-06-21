@@ -1,21 +1,10 @@
-// 此处存放一些全局相关的信息
+/**
+ * 插件自身常量定义
+ */
 import browser from "webextension-polyfill";
-import UAParser from "ua-parser-js";
-import { EInstallType } from "@/shared/interfaces/enum";
+import { REPO_NAME } from "./repo";
 
-// 仓库相关
-export const REPO_NAME = "pt-plugins/ptpp-next";
-export const REPO_URL = `https://github.com/${REPO_NAME}`;
-export const REPO_API = `https://api.github.com/repos/${REPO_NAME}`;
-
-export const GROUP_TELEGRAM = "https://t.me/joinchat/NZ9NCxPKXyby8f35rn_QTw";
-export const GROUP_QQ = "https://jq.qq.com/?_wv=1027&k=7d6xEo0L";
-
-// 插件相关
 export const MANIFEST = browser.runtime.getManifest();
-
-// 浏览器相关
-export const UAPARSER = UAParser();
 
 // 版本相关
 type dotVersion = `v${number}.${number}.${number}`
@@ -43,15 +32,14 @@ export function getFullVersion(): VersionDetail {
   return { full: fullVersion, main: version as dotVersion, hash: versionHash };
 }
 
-// 环境相关
-export const isProd = ["production", "prod"].includes(process.env.NODE_ENV!);
-export const isDebug = !isProd;
-
-export async function getInstallType(): Promise<EInstallType> {
+/**
+ * 插件安装方式
+ */
+export async function getInstallType(): Promise<browser.Management.ExtensionInstallType | "packed"> {
   const detail = await browser.management.getSelf();
   if (detail?.updateUrl?.includes(REPO_NAME)) {
-    return EInstallType.packed;
+    return "packed";
   } else {
-    return detail.installType as EInstallType.normal | EInstallType.development;
+    return detail.installType;
   }
 }

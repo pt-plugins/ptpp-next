@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref, inject, watch, type Ref, unref, onMounted } from "vue";
-import { REPO_URL } from "@/shared/constants";
+import { REPO_URL } from "@/shared/constants/repo";
 import {
   entityList,
   getDownloaderMetaData,

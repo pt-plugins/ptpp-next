@@ -1,11 +1,19 @@
 import { defineStore } from "pinia";
 import { nanoid } from "nanoid";
-import { AbstractBittorrentClient, type BittorrentClientBaseConfig, getDownloader } from "@ptpp/downloader";
+import {
+  getDownloader,
+  AbstractBittorrentClient,
+  type BittorrentClientBaseConfig,
+  type CAddTorrentOptions
+} from "@ptpp/downloader";
+import { remove } from "lodash-es";
 
 interface downloadHistory {
+  id: string,
   timestamp: number,
   clientId: string,
-
+  url: string,
+  options: CAddTorrentOptions
 }
 
 const downloaderInstanceCache: Map<string, AbstractBittorrentClient> = new Map();
@@ -17,6 +25,7 @@ export const useDownloaderStore = defineStore("downloader", {
     clients: [] as BittorrentClientBaseConfig[],
     recordDownloadHistory: {
       enable: true,
+      maxRecord: 100,
       records: [] as downloadHistory[],
     },
     retryOnDownload: {
@@ -67,13 +76,7 @@ export const useDownloaderStore = defineStore("downloader", {
     },
 
     removeDownloaderConfig(clientId: string) {
-      const clientIndex = this.clients.findIndex(data => {
-        return data.id === clientId;
-      });
-
-      if (clientIndex !== -1) {
-        this.clients.splice(clientIndex, 1);
-      }
+      const removedClient = remove(this.clients, client => client.id === clientId);
 
       // if this downloader is default downloader
       if (clientId === this.defaultDownloaderId) {
@@ -81,8 +84,7 @@ export const useDownloaderStore = defineStore("downloader", {
       }
 
       // Clean download History for this downloader
-      this.recordDownloadHistory.records =
-        this.recordDownloadHistory.records.filter(rec => rec.clientId !== clientId);
+      remove(this.recordDownloadHistory.records, rec => rec.clientId === clientId);
     },
 
     async getDownloader(clientId: string): Promise<AbstractBittorrentClient> {
@@ -98,6 +100,29 @@ export const useDownloaderStore = defineStore("downloader", {
       }
 
       return downloaderInstanceCache.get(clientId)!;
+    },
+
+    addDownloadRecord(record: Omit<downloadHistory, "timestamp" | "id">) {
+      if (this.recordDownloadHistory.enable) {
+        this.recordDownloadHistory.records.push({
+          id: nanoid(),
+          timestamp: +new Date(),
+          ...record
+        });
+
+        if (this.recordDownloadHistory.records.length > this.recordDownloadHistory.maxRecord) {
+          this.recordDownloadHistory.records.splice(0,
+            this.recordDownloadHistory.records.length - this.recordDownloadHistory.maxRecord);
+        }
+      }
+    },
+
+    removeDownloadRecord(recordId: string) {
+      remove(this.recordDownloadHistory.records, data => data.id === recordId);
+    },
+
+    clearDownloadRecord() {
+      this.recordDownloadHistory.records = [];
     }
   }
 });

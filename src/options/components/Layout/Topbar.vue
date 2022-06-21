@@ -1,22 +1,16 @@
 <script lang="ts" setup>
 import { useDisplay } from "vuetify";
-import {useUIStore} from "@/shared/store/ui";
-import {REPO_URL} from "@/shared/constants";
+import { useUIStore } from "@/shared/store/ui";
+import { GROUP_QQ, GROUP_TELEGRAM, REPO_URL } from "@/shared/constants/repo";
 
 const uiStore = useUIStore();
 const display = useDisplay();
 
-const appendMenu: Array<{ title: string, icon: string, [str: string]: any }> = [
-  {
-    title: "layout.header.home",
-    icon: "mdi-home",
-    href: REPO_URL
-  },
-  {
-    title: "layout.header.wiki",
-    icon: "mdi-help-circle",
-    href: `${REPO_URL}/wiki`
-  }
+const helpMenu = [
+  { type: "wiki", icon: "mdi-wikipedia", href: `${REPO_URL}/wiki` },
+  { type: "forum", icon: "mdi-forum", href: `${REPO_URL}/discussions` },
+  { type: "telegram", icon: "mdi-send-circle", href: GROUP_TELEGRAM },
+  { type: "qq", icon:"mdi-qqchat", href: GROUP_QQ }
 ];
 </script>
 
@@ -43,53 +37,49 @@ const appendMenu: Array<{ title: string, icon: string, [str: string]: any }> = [
       <!-- 处于大屏幕，完整显示所有btn -->
       <template v-if="!display.mdAndDown.value">
         <v-btn
-          v-for="(append, index) in appendMenu"
-          :key="index"
-          v-bind.prop="append.prop"
-          :href="append.href"
-          :title="$t(append.title)"
+          :href="REPO_URL" target="_blank"
           rel="noopener noreferrer nofollow"
           size="large"
-          target="_blank"
         >
-          <v-icon :icon="append.icon" />
-          <span class="ml-1">{{ $t(append.title) }}</span>
+          <v-icon icon="mdi-home" />
+          <span class="ml-1">{{ $t("layout.header.home") }}</span>
         </v-btn>
-      </template>
-
-      <!-- 处于小屏幕，只显示点，btn以menu列表形式展示 -->
-      <template v-else>
-        <!-- TODO small searchbox -->
-        <v-btn icon="mdi-magnify" />
-
-        <v-menu
-          v-if="display.mdAndDown.value"
-          bottom
-          left offset-y
-        >
+        <v-menu location="bottom end">
           <template #activator="{ props }">
-            <v-btn icon="mdi-dots-vertical" v-bind="props" />
+            <v-btn size="large" v-bind="props">
+              <v-icon icon="mdi-help-circle" />
+              {{ $t('layout.header.help') }}
+            </v-btn>
           </template>
 
-          <v-list>
-            <v-list-item
-              v-for="(item, index) in appendMenu"
-              :key="index"
-              :href="item.href"
-              :prepend-icon="item.icon"
-              :title="$t(item.title)"
-              rel="noopener noreferrer nofollow"
-              size="large"
-              target="_blank"
-            >
-              {{ $t(item.title) }}
+          <v-list density="compact">
+            <v-list-item v-for="(item, index) in helpMenu" :key="index" :value="index">
+              <v-btn
+                :class="[`help-type-${item.type}`]"
+                :prepend-icon="item.icon"
+                :href="item.href" rel="noopener noreferrer nofollow"
+                target="_blank" block
+                variant="plain"
+                style="justify-content: start"
+              >
+                {{ item.type }}
+              </v-btn>
             </v-list-item>
           </v-list>
         </v-menu>
+      </template>
+
+      <!-- 处于小屏幕，只显示搜索 -->
+      <template v-else>
+        <!-- TODO small searchbox -->
+        <v-btn icon="mdi-magnify" />
       </template>
     </template>
   </v-app-bar>
 </template>
 
 <style lang="scss" scoped>
+.help-type-telegram :deep(i.v-icon) {
+  transform: rotate(-45deg);
+}
 </style>

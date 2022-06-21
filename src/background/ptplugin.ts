@@ -1,5 +1,5 @@
 import compareVersions from "compare-versions";
-import { isDebug } from "@/shared/constants";
+import { isDebug } from "@/shared/constants/env";
 import browser from "webextension-polyfill";
 
 class PTPlugin {

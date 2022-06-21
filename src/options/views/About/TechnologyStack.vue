@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import axios from "axios";
 import { reactive, computed } from "vue";
-import {REPO_URL} from "@/shared/constants";
+import { REPO_URL } from "@/shared/constants/repo";
 import { useStorage } from "@vueuse/core";
 
 const ptppHistory = [
@@ -46,7 +46,7 @@ const rawDependencyContext = import.meta.webpackContext!("@/..", {
 
 const npmjsPrefix = "https://www.npmjs.com/package/";
 for (const dependencyKey of rawDependencyContext.keys()) {
-  const {dependencies} = rawDependencyContext(dependencyKey);
+  const { dependencies } = rawDependencyContext(dependencyKey);
   Object.entries(dependencies).forEach(value => {
     const [name,version] = value;
     if (!name.startsWith("@ptpp")) {

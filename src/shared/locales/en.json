@@ -67,7 +67,7 @@
         "default": "<Default>"
       },
       "searchTip": "Input keyword, IMDb numbers to search",
-      "wiki": "Wiki"
+      "help": "Help"
     }
   },
   "route": {

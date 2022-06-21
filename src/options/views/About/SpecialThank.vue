@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {REPO_URL} from "@/shared/constants";
-import {definedLangMetaData} from "@/shared/store/ui";
+import { REPO_URL } from "@/shared/constants/repo";
+import { definedLangMetaData } from "@/shared/store/ui";
 
 const sortedPeople = [
   "Rhilip (R酱)",

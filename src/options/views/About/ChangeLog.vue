@@ -3,11 +3,8 @@ import { ref } from "vue";
 import axios from "axios";
 import { marked } from "marked";
 import { useStorage } from "@vueuse/core";
-import {
-  REPO_URL,
-  REPO_API,
-  getFullVersion
-} from "@/shared/constants";
+import { REPO_URL, REPO_API } from "@/shared/constants/repo";
+import { getFullVersion } from "@/shared/constants/extension";
 
 const version = getFullVersion();
 const releasePage = `${REPO_URL}/releases/tag/${version.main}`;
