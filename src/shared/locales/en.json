@@ -24,6 +24,7 @@
   },
   "TechnologyStack": {
     "dependency": "Dependencies of this Project",
+    "seeAllDependency": "See all",
     "ptppHistory": "History of Project ` @:common.name `",
     "stackTableColumn": {
       "homepage": "Homepage",

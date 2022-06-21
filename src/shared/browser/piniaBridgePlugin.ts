@@ -80,7 +80,6 @@ export default function piniaBridgePlugin(context: PiniaPluginContext) {
     onError: onRestoreError
   })
     .then(value => {
-      console.log(value);
       store.$patch(value as unknown as typeof store.$state);
       $ready.value = true;
       afterRestore?.(context);

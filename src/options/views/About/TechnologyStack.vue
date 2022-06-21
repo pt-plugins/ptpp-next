@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import axios from "axios";
 import { reactive, computed } from "vue";
+import {REPO_URL} from "@/shared/constants";
 import { useStorage } from "@vueuse/core";
 
 const ptppHistory = [
@@ -108,7 +109,17 @@ Object.values(rawDependencies).forEach(value => {
     </v-card-text>
   </v-card>
   <v-card>
-    <v-card-title>{{ $t('TechnologyStack.dependency') }}</v-card-title>
+    <v-card-title>
+      {{ $t('TechnologyStack.dependency') }}
+      <v-spacer />
+      <v-btn
+        :href="`${REPO_URL}/network/dependencies`" target="_blank"
+        variant="text" color="primary"
+        append-icon="mdi-open-in-new"
+      >
+        {{ $t('TechnologyStack.seeAllDependency') }}
+      </v-btn>
+    </v-card-title>
     <v-card-text>
       <v-table>
         <thead>

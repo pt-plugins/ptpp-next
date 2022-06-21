@@ -24,6 +24,7 @@
   },
   "TechnologyStack": {
     "dependency": "项目依赖",
+    "seeAllDependency": "查看所有依赖",
     "ptppHistory": "@:common.name 的历史",
     "stackTableColumn": {
       "homepage": "项目主页",
