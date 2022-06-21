@@ -28,6 +28,7 @@ export const clientConfig: TorrentClientConfig = {
 
 // noinspection JSUnusedGlobalSymbols
 export const clientMetaData: TorrentClientMetaData = {
+  version: "v0.2.2",
   description: "Download Station是由Synology NAS提供的一款网页式下载应用程序",
   warning: ["DSM 4.2以及之后版本请勿开启二步验证选项"],
   feature: {
@@ -352,8 +353,6 @@ interface rawTask {
 
 // noinspection JSUnusedGlobalSymbols
 export default class SynologyDownloadStation extends AbstractBittorrentClient<TorrentClientConfig> {
-  readonly version = "v0.2.2";
-
   private _sessionId?: string;
   private _apiInfo?: SynologyInfoApiResponseData;
 

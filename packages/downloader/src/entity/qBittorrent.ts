@@ -30,8 +30,8 @@ export const clientConfig: TorrentClientConfig = {
 
 // noinspection JSUnusedGlobalSymbols
 export const clientMetaData: TorrentClientMetaData = {
-  description:
-    "qBittorrent是一个跨平台的自由BitTorrent客户端，其图形用户界面是由Qt所写成的。",
+  version: "v0.1.0",
+  description: "qBittorrent是一个跨平台的自由BitTorrent客户端，其图形用户界面是由Qt所写成的。",
   warning: [
     "当前仅支持 qBittorrent v4.1+",
     "由于浏览器限制，需要禁用 qBittorrent 的『启用跨站请求伪造(CSRF)保护』功能才能正常使用",
@@ -169,8 +169,6 @@ function normalizePieces (
 
 // noinspection JSUnusedGlobalSymbols
 export default class QBittorrent extends AbstractBittorrentClient<TorrentClientConfig> {
-  readonly version = "v0.1.0";
-
   isLogin: boolean | null = null;
   private syncData: rawSyncMaindata = { rid: 0 };
   private lastSyncTimestamp: number = 0;

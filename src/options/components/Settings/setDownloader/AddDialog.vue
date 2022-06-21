@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {reactive, ref, inject, watch, type Ref, unref} from "vue";
-import {REPO_URL} from "@/shared/constants";
+import { reactive, ref, inject, watch, type Ref, unref, onMounted } from "vue";
+import { REPO_URL } from "@/shared/constants";
 import {
   entityList,
   getDownloaderMetaData,
@@ -8,7 +8,7 @@ import {
   getDownloaderDefaultConfig,
   BittorrentClientBaseConfig, TorrentClientMetaData,
 } from "@ptpp/downloader";
-import {useDownloaderStore} from "@/shared/store/downloader";
+import { useDownloaderStore } from "@/shared/store/downloader";
 import Editor from "./Editor.vue";
 
 const showDialog = inject<Ref<boolean>>("showAddDialog")!;
@@ -21,14 +21,24 @@ watch(showDialog, () => {
   selectedClientType.value = null;
 });
 
+const clientMetaData = reactive<Record<string, {
+  icon: string,
+  metadata: TorrentClientMetaData
+}>>({});
+
+onMounted(async () => {
+  for (const entityListElement of entityList) {
+    clientMetaData[entityListElement] = {
+      icon: getDownloaderIcon(entityListElement),
+      metadata: await getDownloaderMetaData(entityListElement)
+    };
+  }
+});
+
 const clientConfig = inject<Ref<BittorrentClientBaseConfig>>("clientConfig")!;
-const clientMetaData = reactive<Record<string, TorrentClientMetaData>>({});
 
 async function updateSelectedClientType(selectClientType: string) {
   clientConfig.value = await getDownloaderDefaultConfig(selectClientType);
-  if (!clientMetaData[selectClientType]) {
-    clientMetaData[selectClientType] = await getDownloaderMetaData(selectClientType);
-  }
 }
 
 function saveClient() {
@@ -59,16 +69,20 @@ function saveClient() {
             <v-autocomplete
               v-model="selectedClientType"
               :items="entityList"
-              :hint="clientMetaData[selectedClientType]?.description ?? ''"
+              :hint="clientMetaData[selectedClientType]?.metadata.description ?? ''"
               persistent-hint
               @update:modelValue="updateSelectedClientType"
             >
               <template #item="{ props, item }">
                 <v-list-item
-                  :prepend-avatar="getDownloaderIcon(item.raw)"
+                  :prepend-avatar="clientMetaData[item.raw]?.icon ?? ''"
                   v-bind="props"
                   :title="item.raw"
-                />
+                >
+                  <v-list-item-action end>
+                    {{ clientMetaData[item.raw]?.metadata.version ?? '' }}
+                  </v-list-item-action>
+                </v-list-item>
               </template>
             </v-autocomplete>
           </v-window-item>

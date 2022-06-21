@@ -26,6 +26,7 @@ export const clientConfig: BittorrentClientBaseConfig = {
 
 // noinspection JSUnusedGlobalSymbols
 export const clientMetaData: TorrentClientMetaData = {
+  version: "v0.1.0",
   description: "Deluge 是一个通过PyGTK建立图形界面的BitTorrent客户端",
   warning: [
     "仅支持Deluge Web，非Deluge Daemon的直接支持，具体原因请见 issue #207",
@@ -155,7 +156,7 @@ interface DelugeTorrentFilterRules extends CTorrentFilterRules {
 
 // noinspection JSUnusedGlobalSymbols
 export default class Deluge extends AbstractBittorrentClient {
-  readonly version = "v0.1.0";
+
 
   private readonly address: string;
   private _msgId: number;

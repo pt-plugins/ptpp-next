@@ -27,6 +27,7 @@ export const clientConfig: TorrentClientConfig = {
 
 // noinspection JSUnusedGlobalSymbols
 export const clientMetaData: TorrentClientMetaData = {
+  version: "v0.1.1",
   description:
     "μTorrent 是一个小巧强劲，全功能，用C++编写，支持Windows、Mac OS X和GNU/Linux平台的免费BitTorrent客户端。",
   warning: [
@@ -104,8 +105,6 @@ interface TorrentListResponse extends BaseUtorrentResponse {
 
 // noinspection JSUnusedGlobalSymbols
 export default class UTorrent extends AbstractBittorrentClient<TorrentClientConfig> {
-  readonly version = "v0.0.1";
-
   readonly address: string;
 
   private _sid: string | null = null;

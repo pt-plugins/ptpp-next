@@ -27,8 +27,8 @@ export const clientConfig: TorrentClientConfig = {
 
 // noinspection JSUnusedGlobalSymbols
 export const clientMetaData: TorrentClientMetaData = {
-  description:
-    "Transmission 是一个跨平台的BitTorrent客户端，特点是硬件资源消耗极少，界面极度精简",
+  version: "v0.1.0",
+  description: "Transmission 是一个跨平台的BitTorrent客户端，特点是硬件资源消耗极少，界面极度精简",
   warning: [
     "默认情况下，系统会请求 http://ip:port/transmission/rpc 这个路径，如果无法连接，请确认 `settings.json` 文件的 `rpc-url` 值；详情可参考：https://github.com/ronggang/PT-Plugin-Plus/issues/32",
   ],
@@ -222,8 +222,6 @@ interface TransmissionTorrentRemoveArguments
 
 // noinspection JSUnusedGlobalSymbols
 export default class Transmission extends AbstractBittorrentClient<TorrentClientConfig> {
-  readonly version = "v0.1.0";
-
   private readonly torrentRequestFields: TransmissionTorrentsField[] = [
     "addedDate",
     "id",

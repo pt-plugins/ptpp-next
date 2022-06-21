@@ -26,6 +26,7 @@ export const clientConfig: TorrentClientConfig = {
 
 // noinspection JSUnusedGlobalSymbols
 export const clientMetaData: TorrentClientMetaData = {
+  version: "v0.0.1",
   description: "rTorrent 的一款基于PHP的Web前端面板",
   feature: {
     CustomPath: {
@@ -114,8 +115,6 @@ function parseResponseXML (resp: string): string[] {
 
 // noinspection JSUnusedGlobalSymbols
 export default class RuTorrent extends AbstractBittorrentClient<TorrentClientConfig> {
-  readonly version = "v0.0.1";
-
   constructor (options: Partial<TorrentClientConfig> = {}) {
     super({ ...clientConfig, ...options });
   }

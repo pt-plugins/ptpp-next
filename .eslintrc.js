@@ -56,6 +56,7 @@ module.exports = {
     "no-empty": ["error", { allowEmptyCatch: true }],
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "object-curly-spacing": ["warn", "always"],
     "vue/max-attributes-per-line": [
       "warn",
       {

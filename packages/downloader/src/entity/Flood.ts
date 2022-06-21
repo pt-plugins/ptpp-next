@@ -32,8 +32,8 @@ export const clientConfig: TorrentClientConfig = {
 
 // noinspection JSUnusedGlobalSymbols
 export const clientMetaData: TorrentClientMetaData = {
-  description:
-    "Flood 是 ruTorrent 的另一款基于Node的Web前端面板，界面美观，加载速度快",
+  version: "v0.0.1",
+  description: "Flood 是 ruTorrent 的另一款基于Node的Web前端面板，界面美观，加载速度快",
   warning: [
     "同时兼容 Flood 原版以及 jesec修改版",
     "如果当前已登录Flood面板，请退出登陆后再做连接性测试",
@@ -281,8 +281,6 @@ interface TorrentListSummaryResponse {
 
 // noinspection JSUnusedGlobalSymbols
 export default class Flood extends AbstractBittorrentClient {
-  readonly version = "v0.0.1";
-
   private apiType?: FloodApiType;
 
   constructor (options: Partial<TorrentClientConfig> = {}) {

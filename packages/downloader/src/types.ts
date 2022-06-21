@@ -65,6 +65,7 @@ export interface TorrentClientFeatureMetaData {
  * 客户端介绍信息
  */
 export interface TorrentClientMetaData {
+  version: `v${number}.${number}.${number}`;  // 实现版本
   description?: string; // 客户端介绍
   warning?: string[]; // 用于配置时显示的警告信息，要用于一些特殊提示
 
@@ -179,7 +180,6 @@ export interface CAddTorrentOptions {
  * 客户端具体要实现的抽象方法
  */
 export abstract class AbstractBittorrentClient<T extends BittorrentClientBaseConfig = BittorrentClientBaseConfig> {
-  abstract version: `v${number}.${number}.${number}`;
   readonly config: T;
 
   private clientVersion?: string;
