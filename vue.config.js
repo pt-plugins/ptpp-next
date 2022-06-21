@@ -90,10 +90,26 @@ module.exports = {
       .add(path.resolve(__dirname, './src/shared/locales'))
       .end();
 
-    // add support for .ico assert
+    /**
+     * Asset:
+     * 1. add ico support for vue-cli
+     * 2. change type to `asset/resource` to always generate img files
+     * 3. extend filename, prefix with workspace folder
+     */
     config.module
       .rule('images')
       .test(/\.(png|jpe?g|gif|webp|avif|ico)(\?.*)?$/)
-      .set('type', 'asset/resource');
+      .set('type', 'asset/resource')
+      .set('generator', {
+        filename: (d) => {
+          let packagePrefix = '';
+          for (const packageElement of ['downloader', 'site']) {
+            if (d.filename.includes(`packages/${packageElement}`)) {
+              packagePrefix = `${packageElement}/`;
+            }
+          }
+          return `img/${packagePrefix}[name].[hash:8][ext]`;
+        }
+      });
   },
 };

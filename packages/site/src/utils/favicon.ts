@@ -23,7 +23,7 @@ const NO_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAAC
 
 const packedIconContext = import.meta.webpackContext!("../icons/", {
   regExp: /\.(ico|png)$/,
-  mode: "lazy"
+  mode: "eager"
 });
 const packedIconList = packedIconContext.keys() as Array<`./${string}.${"png" | "ico"}`>;
 
