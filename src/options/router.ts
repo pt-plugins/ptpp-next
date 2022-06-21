@@ -67,7 +67,16 @@ export const routes: RouteRecordRaw[] = [
         path: "/set-base",
         name: "setBase",
         meta: { icon: "mdi-cog" },
-        component: () => dynamicImportView("Settings/setBase")
+        component: () => dynamicImportView("Settings/setBase"),
+        children: [
+          {
+            path: "ui",
+            alias: "",
+            name: "setBase/ui",
+            meta: {icon: "mdi-cog", tabKey: "ui"},
+            component: () => dynamicImportView("Settings/setBase/ui")
+          }
+        ]
       },
       {
         path: "/set-site",
